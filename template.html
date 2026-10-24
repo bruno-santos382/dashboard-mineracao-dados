@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITULO_PAGINA}}</title>
+<style>
+  :root {
+    --tinta: #0F1B22;
+    --suave: #26343C;
+    --fundo: #F2F5F6;
+    --cartao: #FFFFFF;
+    --linha: #DDE3E7;
+    --petroleo: #1F6F8B;
+    --ambar: #D98E04;
+    --cabecalho: #14232B;
+    --fonte: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--fundo);
+    color: var(--tinta);
+    font-family: var(--fonte);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  /* ---------- Cabeçalho ---------- */
+  header {
+    background: var(--cabecalho);
+    color: #fff;
+    padding: 40px 24px 32px;
+  }
+  .miolo { max-width: 1240px; margin: 0 auto; }
+  header h1 {
+    margin: 0 0 8px;
+    font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  header p.apoio {
+    margin: 0;
+    max-width: 62ch;
+    color: #F1F6F8;
+  }
+  .fonte-dados { margin: 16px 0 0; font-size: 1rem; color: #F1F6F8; }
+  .fonte-dados a { color: #fff; font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
+  .fonte-dados a:hover, .fonte-dados a:focus-visible { color: #F5B83D; }
+  footer a { color: var(--tinta); font-weight: 650; text-underline-offset: 3px; }
+  .indicadores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 48px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .indicadores li { min-width: 120px; }
+  .indicadores .valor {
+    display: block;
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  .indicadores .rotulo { display: block; color: #DCE6EA; font-size: 0.9375rem; }
+
+  /* ---------- Corpo ---------- */
+  main { max-width: 1240px; margin: 0 auto; padding: 8px 24px 48px; }
+  .secao { margin-top: 40px; }
+  .secao > h2 {
+    margin: 0 0 4px;
+    font-size: 1.35rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .secao > p.intro { margin: 0 0 16px; color: var(--suave); max-width: 80ch;  font-size: 1.0625rem; }
+
+  .grade { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; }
+  .metade { grid-column: span 3; }
+  .dois-tercos { grid-column: span 4; }
+  .um-terco { grid-column: span 2; }
+
+  .cartao {
+    background: var(--cartao);
+    border: 1px solid var(--linha);
+    border-radius: 6px;
+    padding: 20px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .cartao h3 {
+    margin: 0 0 6px;
+    font-size: 1.1rem;
+    font-weight: 650;
+    line-height: 1.3;
+  }
+  .como-ler { margin: 0 0 8px; font-size: 1rem; color: var(--suave); }
+  .grafico { width: 100%; min-width: 0; }
+  .leitura {
+    margin: 10px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--linha);
+    font-size: 0.9375rem;
+  }
+  .leitura .marca { font-weight: 650; }
+
+  /* Guia do boxplot */
+  .guia h3 { font-size: 1rem; }
+  .guia ol { margin: 8px 0 0; padding-left: 1.2em; font-size: 0.9375rem; }
+  .guia li { margin-bottom: 8px; }
+  .guia .nota { margin-top: auto; padding-top: 12px; font-size: 0.9375rem; color: var(--suave); }
+
+  footer { border-top: 1px solid var(--linha); background: #fff; }
+  footer .miolo { padding: 24px; font-size: 1rem; color: var(--suave); }
+  footer p { margin: 0 0 6px; max-width: 90ch; }
+  .amostra-cor {
+    display: inline-block; width: 0.8em; height: 0.8em; border-radius: 50%;
+    vertical-align: baseline; margin-right: 0.3em;
+  }
+
+  @media (max-width: 960px) {
+    .metade, .dois-tercos, .um-terco { grid-column: span 6; }
+    header { padding: 28px 16px 24px; }
+    main { padding: 4px 16px 36px; }
+    .cartao { padding: 16px 12px 12px; }
+  }
+</style>
+<script>{{PLOTLY_JS}}</script>
+</head>
+<body>
+
+<header>
+  <div class="miolo">
+    <h1>Repositórios populares do GitHub</h1>
+    <p class="apoio">O que os repositórios mais estrelados têm em comum? Sete perguntas respondidas com os dados: quando surgiram, em que linguagens foram escritos, com que licença são publicados e como a popularidade se distribui.</p>
+    <p class="fonte-dados">Base de dados: <a href="https://www.kaggle.com/datasets/donbarbos/github-repos" target="_blank" rel="noopener">GitHub Repos no Kaggle (donbarbos)</a></p>
+    <ul class="indicadores">
+      <li><span class="valor">{{KPI_REPOS}}</span><span class="rotulo">repositórios analisados</span></li>
+      <li><span class="valor">{{KPI_ESTRELAS}}</span><span class="rotulo">estrelas somadas</span></li>
+      <li><span class="valor">{{KPI_LINGUAGENS}}</span><span class="rotulo">linguagens diferentes</span></li>
+      <li><span class="valor">{{KPI_PERIODO}}</span><span class="rotulo">anos de criação</span></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================== QUANDO ===================== -->
+  <section class="secao">
+    <h2>Ao longo do tempo</h2>
+    <p class="intro">Quando os repositórios populares foram criados e se os mais antigos tiveram mais tempo para juntar estrelas.</p>
+    <div class="grade">
+      <article class="cartao metade">
+        <h3>Quantos repositórios populares foram criados em cada ano?</h3>
+        <p class="como-ler">Cada ponto é um ano. Quanto mais alto, mais repositórios criados naquele ano.</p>
+        <div class="grafico">{{GRAFICO_ANOS}}</div>
+        <p class="leitura"><span class="marca">O que os dados mostram: </span>{{LEITURA_ANOS}}</p>
+      </article>
+
+      <article class="cartao metade">
+        <h3>Repositórios mais antigos têm mais estrelas?</h3>
+        <p class="como-ler">Cada barra mostra a mediana de estrelas dos repositórios criados naquele ano (metade tem mais, metade tem menos).</p>
+        <div class="grafico">{{GRAFICO_MEDIANA}}</div>
+        <p class="leitura"><span class="marca">O que os dados mostram: </span>{{LEITURA_MEDIANA}}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== LINGUAGENS E LICENÇAS ===================== -->
+  <section class="secao">
+    <h2>Linguagens e licenças</h2>
+    <p class="intro">Em que se escrevem os repositórios populares, quanto cada linguagem rende em estrelas e sob quais regras eles são compartilhados.</p>
+    <div class="grade">
+      <article class="cartao metade">
+        <h3>Quais são as 10 linguagens com mais repositórios?</h3>
+        <p class="como-ler">Quanto mais comprida a barra, mais repositórios. O número entre parênteses é a fatia do total.</p>
+        <div class="grafico">{{GRAFICO_LINGUAGENS}}</div>
+        <p class="leitura"><span class="marca">O que os dados mostram: </span>{{LEITURA_LINGUAGENS}}</p>
+      </article>
+
+      <article class="cartao metade">
+        <h3>Qual licença os repositórios populares usam?</h3>
+        <p class="como-ler">A rosca mostra como o total de repositórios se divide entre as licenças mais comuns.</p>
+        <div class="grafico">{{GRAFICO_LICENCAS}}</div>
+        <p class="leitura"><span class="marca">O que os dados mostram: </span>{{LEITURA_LICENCAS}}</p>
+      </article>
+
+      <article class="cartao dois-tercos">
+        <h3>Alguma linguagem concentra repositórios com mais estrelas?</h3>
+        <p class="como-ler">Cada caixa reúne os repositórios de uma linguagem. O eixo vertical é logarítmico: a distância entre marcas representa multiplicação, não soma, para que os campeões não esmaguem os demais.</p>
+        <div class="grafico">{{GRAFICO_BOXPLOT}}</div>
+        <p class="leitura"><span class="marca">O que os dados mostram: </span>{{LEITURA_BOXPLOT}}</p>
+      </article>
+
+      <aside class="cartao um-terco guia">
+        <h3>Como ler um boxplot</h3>
+        <ol>
+          <li><strong>A linha dentro da caixa</strong> é a mediana: metade dos repositórios fica acima dela, metade abaixo.</li>
+          <li><strong>A caixa</strong> abrange os 50% do meio, do primeiro ao terceiro quartil.</li>
+          <li><strong>As hastes</strong> vão até os valores mais extremos considerados normais.</li>
+          <li><strong>Os pontinhos</strong> são repositórios muito fora do padrão, os campeões de estrelas.</li>
+        </ol>
+        <p class="nota">Caixa mais alta = linguagem com repositórios mais estrelados.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================== POPULARIDADE ===================== -->
+  <section class="secao">
+    <h2>Popularidade: estrelas e forks</h2>
+    <p class="intro">Estrelas indicam interesse; forks indicam que alguém copiou o projeto para usar ou modificar. Os dois gráficos usam escala logarítmica porque poucos repositórios têm valores enormes.</p>
+    <div class="grade">
+      <article class="cartao metade">
+        <h3>Como as estrelas se distribuem entre os repositórios?</h3>
+        <p class="como-ler">Cada barra conta quantos repositórios têm o número de estrelas dentro de uma faixa. A escala é logarítmica: as faixas à direita cobrem intervalos cada vez maiores.</p>
+        <div class="grafico">{{GRAFICO_HISTOGRAMA}}</div>
+        <p class="leitura"><span class="marca">O que os dados mostram: </span>{{LEITURA_HISTOGRAMA}}</p>
+      </article>
+
+      <article class="cartao metade">
+        <h3>Repositórios com mais estrelas também têm mais forks?</h3>
+        <p class="como-ler">Cada ponto é um repositório. Se os pontos sobem da esquerda para a direita, mais forks acompanham mais estrelas.</p>
+        <div class="grafico">{{GRAFICO_DISPERSAO}}</div>
+        <p class="leitura"><span class="marca">O que os dados mostram: </span>{{LEITURA_DISPERSAO}}</p>
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="miolo">
+    <p><strong>Fonte:</strong> <a href="https://www.kaggle.com/datasets/donbarbos/github-repos" target="_blank" rel="noopener">https://www.kaggle.com/datasets/donbarbos/github-repos</a> (arquivo repositories.csv), repositórios públicos do GitHub (dados atualizados até {{DATA_REF}}).</p>
+    <p><strong>Cores:</strong> o azul-petróleo é a cor padrão dos dados; o <span class="amostra-cor" style="background:#D98E04"></span>âmbar marca sempre um destaque (o maior valor, ou os repositórios mais estrelados). Todos os valores aparecem escritos nos gráficos ou ao passar o mouse.</p>
+    <p><strong>Gráficos interativos:</strong> passe o mouse sobre qualquer elemento para ver o valor exato; arraste para ampliar e dê duplo clique para voltar.</p>
+  </div>
+</footer>
+
+</body>
+</html>
