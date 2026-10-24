@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Generated files
+dashboard.html
+
+# Data files (loaded from Kaggle instead)
+*.csv

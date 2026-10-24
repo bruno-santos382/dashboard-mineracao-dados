@@ -2,13 +2,15 @@
 """
 Gera o dashboard "Repositórios populares do GitHub" em um único arquivo HTML.
 
-Uso (com os três arquivos na mesma pasta):
+Uso:
     python gerar_dashboard.py
 
-Dependências: pandas, numpy e plotly  ->  pip install -r requirements.txt
+Dependências: pandas, numpy, plotly e kagglehub  ->  pip install -r requirements.txt
 
 O HTML final leva a biblioteca Plotly embutida, então abre em qualquer
 navegador, mesmo sem internet e sem instalar nada.
+
+Dados: carregados automaticamente do Kaggle (donbarbos/github-repos)
 """
 
 from __future__ import annotations
@@ -18,6 +20,8 @@ import re
 import sys
 from pathlib import Path
 
+import kagglehub
+from kagglehub import KaggleDatasetAdapter
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -108,15 +112,21 @@ def esc(texto: str) -> str:
 # ---------------------------------------------------------------------------
 # Leitura e preparo dos dados
 # ---------------------------------------------------------------------------
-def carregar_dados(caminho: Path) -> pd.DataFrame:
-    if not caminho.exists():
-        sys.exit(f"Erro: não encontrei o arquivo de dados em '{caminho}'.")
-
-    df = pd.read_csv(caminho, encoding="utf-8-sig")
+def carregar_dados() -> pd.DataFrame:
+    """Carrega o dataset do Kaggle (donbarbos/github-repos)."""
+    print("Carregando dados do Kaggle...")
+    try:
+        df = kagglehub.dataset_load(
+            KaggleDatasetAdapter.PANDAS,
+            "donbarbos/github-repos",
+            "repositories.csv",
+        )
+    except Exception as e:
+        sys.exit(f"Erro ao carregar dados do Kaggle: {e}")
 
     faltando = [c for c in COLUNAS_ORIGINAIS if c not in df.columns]
     if faltando:
-        sys.exit(f"Erro: o CSV não tem as colunas esperadas: {', '.join(faltando)}")
+        sys.exit(f"Erro: o dataset não tem as colunas esperadas: {', '.join(faltando)}")
 
     df = df[list(COLUNAS_ORIGINAIS)].rename(columns=COLUNAS_ORIGINAIS)
     df["criado_em"] = pd.to_datetime(df["criado_em"], utc=True, errors="coerce")
@@ -129,7 +139,7 @@ def carregar_dados(caminho: Path) -> pd.DataFrame:
     if len(df) < antes:
         print(f"Aviso: {antes - len(df)} linha(s) ignorada(s) por data ou número inválido.")
     if df.empty:
-        sys.exit("Erro: nenhuma linha válida no CSV.")
+        sys.exit("Erro: nenhuma linha válida no dataset.")
 
     df["ano"] = df["criado_em"].dt.year
     return df
@@ -518,15 +528,14 @@ def montar_html(template: str, valores: dict[str, str]) -> str:
 
 
 def main() -> None:
-    csv_path = PASTA_DO_SCRIPT / "repositories.csv"
     template_path = PASTA_DO_SCRIPT / "template.html"
     saida_path = PASTA_DO_SCRIPT / "dashboard.html"
 
     if not template_path.exists():
         sys.exit(f"Erro: template não encontrado em '{template_path}'.")
 
-    df = carregar_dados(csv_path)
-    print(f"{len(df)} repositórios carregados de '{csv_path.name}'.")
+    df = carregar_dados()
+    print(f"{len(df)} repositórios carregados do Kaggle.")
 
     fig1, txt1, info = grafico_repos_por_ano(df)
     fig2, txt2 = grafico_top_linguagens(df)

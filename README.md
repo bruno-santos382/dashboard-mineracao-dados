@@ -1,8 +1,8 @@
 # Dashboard: repositórios populares do GitHub
 
-Script em Python que lê um CSV de repositórios do GitHub e gera um **dashboard em um único arquivo HTML**, com 7 gráficos interativos (Plotly). Cada gráfico responde a uma pergunta escrita no próprio card, e o texto "O que os dados mostram" é calculado a partir dos dados.
+Script em Python que carrega dados do Kaggle e gera um **dashboard em um único arquivo HTML**, com 7 gráficos interativos (Plotly). Cada gráfico responde a uma pergunta escrita no próprio card, e o texto "O que os dados mostram" é calculado a partir dos dados.
 
-Base de dados: [GitHub Repos (Kaggle, donbarbos)](https://www.kaggle.com/datasets/donbarbos/github-repos)
+Base de dados: [GitHub Repos (Kaggle, donbarbos)](https://www.kaggle.com/datasets/donbarbos/github-repos) - carregada automaticamente via kagglehub
 
 ## O que o dashboard responde
 
@@ -18,28 +18,27 @@ Base de dados: [GitHub Repos (Kaggle, donbarbos)](https://www.kaggle.com/dataset
 
 ## Arquivos
 
-- `gerar_dashboard.py`: lê o CSV, cria os gráficos e monta o HTML.
+- `gerar_dashboard.py`: carrega os dados do Kaggle, cria os gráficos e monta o HTML.
 - `template.html`: layout e estilo da página (os gráficos entram nos marcadores `{{...}}`).
-- `repositories.csv`: a base de dados.
+- `requirements.txt`: dependências do projeto.
 
 ## Como rodar
 
-1. Coloque os três arquivos na **mesma pasta**.
-2. Instale as dependências (Python 3.9 ou mais novo):
+1. Instale as dependências (Python 3.9 ou mais novo):
 
    ```powershell
    pip install -r requirements.txt
    ```
 
-3. Gere o dashboard:
+2. Gere o dashboard:
 
    ```powershell
    python gerar_dashboard.py
    ```
 
-4. Abra o `dashboard.html` gerado em qualquer navegador. Não precisa de internet nem de instalar nada: a biblioteca Plotly vai embutida no arquivo (por isso ele tem cerca de 5 MB).
+3. Abra o `dashboard.html` gerado em qualquer navegador. Não precisa de internet nem de instalar nada: a biblioteca Plotly vai embutida no arquivo (por isso ele tem cerca de 20 MB).
 
-## Colunas usadas do CSV
+## Colunas usadas do dataset
 
 `Name`, `Created At`, `Updated At`, `Stars`, `Forks`, `Language` e `License`. Se alguma faltar, o script avisa e para.
 
